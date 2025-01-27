@@ -10,5 +10,5 @@ FROM openjdk:17-jdk-slim AS prod
 RUN mkdir /app
 COPY --from=builder /app/target/*.jar /app/app.jar
 WORKDIR app
-EXPOSE 8080:8081
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
