@@ -4,6 +4,9 @@ pipeline {
         maven "3.8.5"
 
     }
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('rashmikguhaamin_dockerhub')
+    }
     stages {
         stage('Compile and Clean') {
             steps {
@@ -21,18 +24,21 @@ pipeline {
         stage('Build Docker image'){
 
             steps {
-                echo "Binding docker image for simple api.."
+                echo "Binding docker image for spring-boot-starter-parent.."
                 sh 'ls'
-                sh 'docker build -t  anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER} .'
+                sh 'docker build -t  rashmikguhaamin/docker_jenkins_springboot:${BUILD_NUMBER} .'
             }
         }
         stage('Docker Login'){
 
             steps {
-                     withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+            /* steps {
+                    withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
                     sh "docker login -u rashmikguhaamin -p ${Dockerpwd}"
                 }
-            }
+            } */
         }
         stage('Docker Push'){
             steps {
@@ -49,6 +55,11 @@ pipeline {
             steps {
                  archiveArtifacts '**/target/*.jar'
             }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
