@@ -1,18 +1,26 @@
 pipeline {
     agent any
+//     tools {
+//         maven 'M3'
+//     }
+
     environment {
         DOCKERHUB_CREDENTIALS = credentials('rashmikguhaamin_dockerhub')
     }
     stages {
+        stage('init') {
+          checkout scm
+       }
         stage('Compile and Clean') {
-            steps {
+            withMaven(maven: 'mvn') {
+
                 // Run Maven on a Unix agent.
                 sh "mvn clean compile"
             }
         }
         stage('deploy') {
 
-            steps {
+            withMaven(maven: 'mvn') {
                 sh "mvn package"
             }
         }
