@@ -3,7 +3,6 @@ pipeline {
 //     tools {
 //         maven 'M3'
 //     }
-
     environment {
         DOCKERHUB_CREDENTIALS = credentials('rashmikguhaamin_dockerhub')
     }
