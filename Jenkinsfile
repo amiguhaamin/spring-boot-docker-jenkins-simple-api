@@ -1,8 +1,5 @@
 pipeline {
     agent any
-//     tools {
-//         maven 'M3'
-//     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('rashmikguhaamin_dockerhub')
     }
@@ -11,22 +8,6 @@ pipeline {
             steps {
                 git branch: 'master', credentialsId: 'DOCKERHUB_CREDENTIALS', url: 'https://github.com/amiguhaamin/spring-boot-docker-jenkins-simple-api.git'
             }
-        }
-        stage('Compile and Clean') {
-            steps {
-//                 withMaven(maven: 'mvn') {
-
-                    // Run Maven on a Unix agent.
-                    sh "mvn clean compile"
-                }
-//             }
-        }
-        stage('deploy') {
-steps {
-//             withMaven(maven: 'mvn') {
-                sh "mvn package"
-            }
-//             }
         }
         stage('Build Docker image'){
 
@@ -49,13 +30,13 @@ steps {
         }
         stage('Docker Push'){
             steps {
-                sh 'docker push rashmikguhaamin/maven-spring-boot-jenkins:${BUILD_NUMBER}'
+                sh 'docker push rashmikguhaamin/docker_jenkins_springboot:${BUILD_NUMBER}'
             }
         }
         stage('Docker deploy'){
             steps {
 
-                sh 'docker run -itd -p  8081:8080 rashmikguhaamin/maven-spring-boot-jenkins:${BUILD_NUMBER}'
+                sh 'docker run -itd -p  8081:8080 rashmikguhaamin/docker_jenkins_springboot:${BUILD_NUMBER}'
             }
         }
         stage('Archving') {
